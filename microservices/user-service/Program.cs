@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));builder.Services.AddRepositories();
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));builder.Services.AddRepositories();
 
 builder.Services.AddServices();
 
