@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using user_service.Data;
 using user_service.Repositories;
+using user_service.Repositories.Users;
 using user_service.Services;
 
 namespace user_service;

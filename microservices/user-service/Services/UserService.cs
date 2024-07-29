@@ -1,81 +1,78 @@
 ﻿using AutoMapper;
 using user_service.DTOs.User;
+using user_service.Models;
 using user_service.Repositories;
+using user_service.Repositories.Users;
 
 namespace user_service.Services;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepo, IMapper mapper) : IUserService
 {
-    private IUserRepository _userRepository;
-    private IMapper _mapper;
-
-    public UserService(IUserRepository userRepository, IMapper mapper)
+    public async Task<UserDto?> GetUserByIdAsync(Guid id)
     {
-        _userRepository = userRepository;
-        _mapper = mapper;
-    }
-
-    public async Task<UserDto> GetUserByIdAsync(Guid id)
-    {
-        var user = _userRepository.GetUserByIdAsync(id);
-        return _mapper.Map<UserDto>(user);
+        var user = await userRepo.GetUserByIdAsync(id);
+        return mapper.Map<UserDto>(user);
     }
 
     public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
     {
-        var userList = await _userRepository.GetAllUsersAsync();
-        return _mapper.Map<List<UserDto>>(userList);
+        var userList = await userRepo.GetAllUsersAsync();
+        return mapper.Map<List<UserDto>>(userList);
     }
 
     public async Task<UserDto> AddUserAsync(UserCreateDto userCreateDto)
     {
-        var user = await _userRepository.GetUserByUserNameAsync(userCreateDto.Username);
+        var user = await userRepo.GetUserByUserNameAsync(userCreateDto.Username);
 
         if (user is not null)
         {
             throw new Exception($"The username {userCreateDto.Username} is already in use.");
         }
         
-        user = await _userRepository.GetUserByEmailAsync(userCreateDto.Email);
+        user = await userRepo.GetUserByEmailAsync(userCreateDto.Email);
         
         if (user is not null)
         {
             throw new Exception($"The email {userCreateDto.Email} is already in use.");
         }
 
-        _mapper.Map(userCreateDto, user);
-
-        await _userRepository.AddUserAsync(user);
+        user = new User();
         
-        return _mapper.Map<UserDto>(user);
+        mapper.Map(userCreateDto, user);
+
+        await userRepo.AddUserAsync(user);
+        
+        return mapper.Map<UserDto>(user);
     }
 
-    public async Task<UserDto> UpdateUserAsync(Guid id, UserUpdateDto userUpdateDto)
+    public async Task<UserDto?> UpdateUserAsync(Guid id, UserUpdateDto userUpdateDto)
     {
-        var user = await _userRepository.GetUserByIdAsync(id);
+        var user = await userRepo.GetUserByIdAsync(id);
 
         if (user == null)
         {
-            throw new Exception($"User with id: {id} was not found.");
+            return null;
         }
 
-        _mapper.Map(userUpdateDto, user);
+        mapper.Map(userUpdateDto, user);
 
-        await _userRepository.UpdateUserAsync(user);
+        await userRepo.UpdateUserAsync(user);
 
-        return _mapper.Map<UserDto>(user);
+        return mapper.Map<UserDto>(user);
     }
 
-    public async Task DeleteUserAsync(Guid id)
+    public async Task<UserDto?> DeleteUserAsync(Guid id)
     {
-        var user = await _userRepository.GetUserByIdAsync(id);
+        var user = await userRepo.GetUserByIdAsync(id);
 
         if (user == null)
         {
-            throw new Exception($"User with id: {id} was not found.");
+            return null;
         }
         
-        await _userRepository.DeleteUserAsync(id);
+        await userRepo.DeleteUserAsync(id);
+
+        return mapper.Map<UserDto>(user);
     }
     
 }

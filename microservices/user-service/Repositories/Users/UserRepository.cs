@@ -2,7 +2,7 @@
 using user_service.Data;
 using user_service.Models;
 
-namespace user_service.Repositories;
+namespace user_service.Repositories.Users;
 
 public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
