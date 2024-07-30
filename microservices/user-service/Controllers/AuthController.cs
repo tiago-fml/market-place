@@ -1,0 +1,93 @@
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using user_service.DTOs.User;
+using user_service.Models;
+using user_service.Repositories.Users;
+using user_service.Utils;
+
+namespace user_service.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController(IConfiguration configuration, IUserRepository userRepository)
+    : ControllerBase
+{
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] UserLogin model)
+    {
+        var user = await userRepository.GetUserByUserNameAsync(model.Username);
+        if (user is null)
+        {
+            return NotFound("User not found");
+        }
+        
+        // Replace this with your own user authentication logic
+        if (!PasswordHasher.VerifyPassword(user.HashedPassword, model.Password)) return Unauthorized();
+        
+        var tokenString = GenerateJwtToken(user);
+
+        return Ok(new { Token = tokenString });
+    }
+    
+    private string GenerateJwtToken(User user)
+    {
+        
+
+        var jwtKey = configuration["Jwt:Key"];
+        if (jwtKey is null)
+        {
+            throw new Exception("JWT Key is missing from AppSettings");
+        }
+            
+        //var key = Encoding.ASCII.GetBytes(jwtKey);
+        
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(jwtKey);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+            }),
+            Expires = DateTime.UtcNow.AddHours(2),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
+       /** 
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var jwtKey = configuration["Jwt:Key"];
+        if (jwtKey is null)
+        {
+            throw new Exception("JWT Key is missing from AppSettings");
+        }
+            
+        var key = Encoding.ASCII.GetBytes(jwtKey);
+            
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+            }),
+            Expires = DateTime.UtcNow.AddHours(2),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256Signature),
+        };
+            
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+        */
+    }
+}
+

@@ -1,6 +1,6 @@
 ﻿namespace user_service.Enums;
 
-public enum Role
+public enum Roles
 {
     Admin, User
 }

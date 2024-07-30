@@ -12,7 +12,7 @@ using user_service.Data;
 namespace user_service.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240729201936_initial_migration")]
+    [Migration("20240730222837_initial_migration")]
     partial class initial_migration
     {
         /// <inheritdoc />
@@ -31,7 +31,7 @@ namespace user_service.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
@@ -39,6 +39,10 @@ namespace user_service.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HashedPassword")
                         .IsRequired()
                         .HasColumnType("text");
 

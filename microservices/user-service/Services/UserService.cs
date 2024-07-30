@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using user_service.DTOs.User;
 using user_service.Models;
-using user_service.Repositories;
 using user_service.Repositories.Users;
+using user_service.Utils;
 
 namespace user_service.Services;
 
@@ -22,23 +22,13 @@ public class UserService(IUserRepository userRepo, IMapper mapper) : IUserServic
 
     public async Task<UserDto> AddUserAsync(UserCreateDto userCreateDto)
     {
-        var user = await userRepo.GetUserByUserNameAsync(userCreateDto.Username);
-
-        if (user is not null)
-        {
-            throw new Exception($"The username {userCreateDto.Username} is already in use.");
-        }
+        await VerifyUserDetails(userCreateDto);
         
-        user = await userRepo.GetUserByEmailAsync(userCreateDto.Email);
-        
-        if (user is not null)
-        {
-            throw new Exception($"The email {userCreateDto.Email} is already in use.");
-        }
-
-        user = new User();
+        var user = new User();
         
         mapper.Map(userCreateDto, user);
+        
+        user.HashedPassword = PasswordHasher.HashPassword(userCreateDto.Password);
 
         await userRepo.AddUserAsync(user);
         
@@ -75,4 +65,27 @@ public class UserService(IUserRepository userRepo, IMapper mapper) : IUserServic
         return mapper.Map<UserDto>(user);
     }
     
+    private async Task VerifyUserDetails(UserCreateDto userDetails)
+    {
+        var user = await userRepo.GetUserByUserNameAsync(userDetails.Username);
+
+        if (user is not null)
+        {
+            throw new Exception($"The username {userDetails.Username} is already in use.");
+        }
+        
+        user = await userRepo.GetUserByEmailAsync(userDetails.Email);
+        
+        if (user is not null)
+        {
+            throw new Exception($"The email {userDetails.Email} is already in use.");
+        }
+
+        if (userDetails.Password.Length < 8 || !userDetails.Password.Any(char.IsDigit) || 
+            !userDetails.Password.Any(char.IsLetter) || !userDetails.Password.Any(char.IsUpper))
+        {
+            throw new Exception(@"Password must have at least 8 characters, including at 
+                least one number and one letter in upper case");
+        }
+    }
 }

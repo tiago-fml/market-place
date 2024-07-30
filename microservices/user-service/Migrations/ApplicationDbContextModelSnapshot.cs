@@ -28,7 +28,7 @@ namespace user_service.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
@@ -36,6 +36,10 @@ namespace user_service.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HashedPassword")
                         .IsRequired()
                         .HasColumnType("text");
 
