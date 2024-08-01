@@ -11,7 +11,7 @@ using user_service.Utils;
 namespace user_service.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class AuthController(IConfiguration configuration, IUserRepository userRepository)
     : ControllerBase
 {
@@ -34,15 +34,11 @@ public class AuthController(IConfiguration configuration, IUserRepository userRe
     
     private string GenerateJwtToken(User user)
     {
-        
-
         var jwtKey = configuration["Jwt:Key"];
         if (jwtKey is null)
         {
             throw new Exception("JWT Key is missing from AppSettings");
         }
-            
-        //var key = Encoding.ASCII.GetBytes(jwtKey);
         
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(jwtKey);
@@ -62,32 +58,6 @@ public class AuthController(IConfiguration configuration, IUserRepository userRe
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(token);
-       /** 
-        var tokenHandler = new JwtSecurityTokenHandler();
-
-        var jwtKey = configuration["Jwt:Key"];
-        if (jwtKey is null)
-        {
-            throw new Exception("JWT Key is missing from AppSettings");
-        }
-            
-        var key = Encoding.ASCII.GetBytes(jwtKey);
-            
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
-            }),
-            Expires = DateTime.UtcNow.AddHours(2),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
-                SecurityAlgorithms.HmacSha256Signature),
-        };
-            
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
-        */
     }
 }
 

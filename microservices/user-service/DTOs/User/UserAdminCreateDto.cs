@@ -1,6 +1,6 @@
 ﻿namespace user_service.DTOs.User;
 
-public class UserCreateDto
+public class UserAdminCreateDto
 {
     public string Username { get; set; }
     public string Password { get; set; }

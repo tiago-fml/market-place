@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using user_service.DTOs.Role;
 using user_service.DTOs.User;
 using user_service.Services;
 
 namespace user_service.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-[Authorize] //(Roles = "Admin")
+[Route("api/users")]
+[Authorize]
 public class UsersController(IUserService userService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult> GetAllUsers()
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<List<UserDto>>> GetAllUsers()
     {
         try
         {
@@ -44,7 +46,7 @@ public class UsersController(IUserService userService) : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult> AddUser(UserCreateDto createDto)
+    public async Task<ActionResult<UserDto>> AddUser(UserCreateDto createDto)
     {
         try
         {
@@ -56,15 +58,29 @@ public class UsersController(IUserService userService) : ControllerBase
         }
     }
     
+    [HttpPost("admin")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<UserDto>> AddAdmin(UserAdminCreateDto createDto)
+    {
+        try
+        {
+            return Ok(await userService.AddAdminAsync(createDto));
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"Error in method {nameof(AddUser)}" + e.Message);
+        }
+    }
+    
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult> UpdateUser(Guid id, UserUpdateDto userUpdateDto)
+    public async Task<ActionResult<UserDto>> UpdateUser(Guid id, UserUpdateDto userUpdateDto)
     {
         try
         {
             var updatedUser = await userService.UpdateUserAsync(id, userUpdateDto);
             if (updatedUser != null)
             {
-                return Ok();
+                return Ok(updatedUser);
             }
 
             return NotFound();
@@ -76,6 +92,7 @@ public class UsersController(IUserService userService) : ControllerBase
     }
     
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin")]    
     public async Task<ActionResult> DeleteUserById(Guid id)
     {
         try
@@ -83,7 +100,7 @@ public class UsersController(IUserService userService) : ControllerBase
             var deletedUser = await userService.DeleteUserAsync(id);
             if (deletedUser != null)
             {
-                return Ok(deletedUser);
+                return Ok($"User with id: {id} was deleted successfully!");
             }
             
             return NotFound();
@@ -91,6 +108,19 @@ public class UsersController(IUserService userService) : ControllerBase
         catch (Exception e)
         {
             return BadRequest($"Error in method {nameof(DeleteUserById)}" + e.Message);
+        }
+    }
+    
+    [HttpGet("roles")]
+    public ActionResult<List<RoleDto>> GetAllUserRoles()
+    {
+        try
+        {
+            return Ok(userService.GetAllUserRoles());
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"Error in method {nameof(GetAllUsers)}" + e.Message);
         }
     }
 }
