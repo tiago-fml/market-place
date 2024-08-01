@@ -1,6 +1,4 @@
-﻿using user_service.Enums;
-
-namespace user_service.DTOs.User;
+﻿namespace user_service.DTOs.User;
 
 public class UserUpdateDto
 {
