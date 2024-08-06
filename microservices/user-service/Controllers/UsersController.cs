@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using user_service.DTOs.Role;
 using user_service.DTOs.User;
+using user_service.Enums;
 using user_service.Services;
 
 namespace user_service.Controllers;
@@ -50,7 +51,7 @@ public class UsersController(IUserService userService) : ControllerBase
     {
         try
         {
-            return Ok(await userService.AddUserAsync(createDto));
+            return Ok(await userService.AddUserAsync(createDto, Roles.User));
         }
         catch (Exception e)
         {
@@ -58,17 +59,31 @@ public class UsersController(IUserService userService) : ControllerBase
         }
     }
     
-    [HttpPost("admin")]
+    [HttpPost("create-admin")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<UserDto>> AddAdmin(UserAdminCreateDto createDto)
+    public async Task<ActionResult<UserDto>> AddAdmin(UserCreateDto createDto)
     {
         try
         {
-            return Ok(await userService.AddAdminAsync(createDto));
+            return Ok(await userService.AddUserAsync(createDto, Roles.Admin));
         }
         catch (Exception e)
         {
-            return BadRequest($"Error in method {nameof(AddUser)}" + e.Message);
+            return BadRequest($"Error in method {nameof(AddAdmin)}" + e.Message);
+        }
+    }
+    
+    [HttpPost("create-employee")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<UserDto>> AddEmployee(UserCreateDto createDto)
+    {
+        try
+        {
+            return Ok(await userService.AddUserAsync(createDto, Roles.Employee));
+        }
+        catch (Exception e)
+        {
+            return BadRequest($"Error in method {nameof(AddEmployee)}" + e.Message);
         }
     }
     

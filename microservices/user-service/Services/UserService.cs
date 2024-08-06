@@ -22,30 +22,15 @@ public class UserService(IUserRepository userRepo, IMapper mapper) : IUserServic
         return mapper.Map<List<UserDto>>(userList);
     }
 
-    public async Task<UserDto> AddUserAsync(UserCreateDto userCreateDto)
+    public async Task<UserDto> AddUserAsync(UserCreateDto userCreateDto, Roles role)
     {
         await VerifyUserDetails(userCreateDto.Username, userCreateDto.Email, userCreateDto.Password);
         
         var user = new User();
         
         mapper.Map(userCreateDto, user);
-        user.Role = Roles.User;
+        user.Role = role;
         user.HashedPassword = PasswordHasher.HashPassword(userCreateDto.Password);
-
-        await userRepo.AddUserAsync(user);
-        
-        return mapper.Map<UserDto>(user);
-    }
-
-    public async Task<UserDto> AddAdminAsync(UserAdminCreateDto adminCreateDto)
-    {
-        await VerifyUserDetails(adminCreateDto.Username, adminCreateDto.Email, adminCreateDto.Password);
-        
-        var user = new User();
-        
-        mapper.Map(adminCreateDto, user);
-        user.Role = Roles.Admin;
-        user.HashedPassword = PasswordHasher.HashPassword(adminCreateDto.Password);
 
         await userRepo.AddUserAsync(user);
         
