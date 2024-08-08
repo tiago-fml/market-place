@@ -1,9 +1,9 @@
-package com.orderservice.dtos
+package com.orderservice.dtos.orderlines
 
-import org.springframework.context.annotation.Description
 import java.util.*
 
-class OrderLineCreateDto(
+class OrderLineDto(
+    val id: UUID,
     val productId: UUID,
     val productDescription: String,
     val quantity:Long,

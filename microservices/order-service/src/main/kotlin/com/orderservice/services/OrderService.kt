@@ -1,6 +1,6 @@
 package com.orderservice.services
 
-import com.orderservice.dtos.OrderCreateDto
+import com.orderservice.dtos.orders.OrderCreateDto
 import com.orderservice.models.Order
 import com.orderservice.models.OrderLine
 import com.orderservice.repositories.OrderRepository
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class OrderService(private val orderRepo: OrderRepository) {
     
-    fun placeOrder(orderCreateDto: OrderCreateDto) {
+    fun placeOrder(orderCreateDto: OrderCreateDto):Order {
         val orderLines = orderCreateDto.orderLines.map { orderLineDto ->
             OrderLine.fromCreateDto(orderLineDto)
         }.toList()
@@ -23,6 +23,6 @@ class OrderService(private val orderRepo: OrderRepository) {
 
         orderLines.forEach { it.order = order }
         
-        orderRepo.save(order)
+        return orderRepo.save(order)
     }
 }

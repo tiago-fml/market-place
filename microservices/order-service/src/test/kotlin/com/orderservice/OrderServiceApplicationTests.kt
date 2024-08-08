@@ -1,12 +1,11 @@
 package com.orderservice
 
-import com.orderservice.dtos.OrderCreateDto
-import com.orderservice.dtos.OrderLineCreateDto
+import com.orderservice.dtos.orders.OrderCreateDto
+import com.orderservice.dtos.orderlines.OrderLineCreateDto
 import com.orderservice.models.Order
 import com.orderservice.models.OrderLine
 import com.orderservice.repositories.OrderRepository
 import com.orderservice.services.OrderService
-import jakarta.xml.bind.annotation.XmlAccessOrder
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor

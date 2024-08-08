@@ -1,5 +1,6 @@
-package com.orderservice.dtos
+package com.orderservice.dtos.orders
 
+import com.orderservice.dtos.orderlines.OrderLineCreateDto
 import java.util.UUID
 
 class OrderCreateDto(
