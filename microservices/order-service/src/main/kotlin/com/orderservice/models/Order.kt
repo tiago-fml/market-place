@@ -1,12 +1,10 @@
 package com.orderservice.models
 
-import com.orderservice.dtos.orderlines.OrderLineDto
 import com.orderservice.dtos.orders.OrderDto
 import com.orderservice.enums.OrderStatus
 import jakarta.persistence.*
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties.Xa
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Entity
 @Table(name = "orders")
@@ -15,13 +13,16 @@ class Order(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: UUID = UUID.randomUUID(),
     val userId: UUID,
+
+    @Enumerated(EnumType.STRING)
     val status: OrderStatus = OrderStatus.AWAITING_PAYMENT,
+    
     val shippingAddress: String,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val total: Double,
     
-    @OneToMany(mappedBy = "order", cascade = [(CascadeType.ALL)])
-    val orderLines: List<OrderLine> = listOf(),
+    @OneToMany(mappedBy = "order", cascade = [(CascadeType.ALL)], orphanRemoval = true)
+    var orderLines: List<OrderLine> = listOf(),
 ){
     fun toDto(): OrderDto {
         return OrderDto(
