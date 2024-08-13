@@ -15,20 +15,20 @@ class OrderLine (
     val productDescription: String,
     val quantity:Long,
     val price:Double,
-
+    
     @ManyToOne
-    var order: Order? = null
+    var order: Order
 ){
     // Map from DTO to entity
     companion object {
-        fun fromCreateDto(dto: OrderLineCreateDto): OrderLine {
+        fun fromCreateDto(dto: OrderLineCreateDto, order: Order): OrderLine {
             return OrderLine(
                 id = UUID.randomUUID(),
                 productId = dto.productId,
                 productDescription = dto.productDescription,
                 quantity = dto.quantity,
                 price = dto.price,
-                order = null
+                order = order
             )
         }
     }
