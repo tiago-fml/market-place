@@ -1,9 +1,9 @@
 package com.orderservice.controllers
 
 import com.orderservice.dtos.orders.OrderCreateDto
+import com.orderservice.dtos.orders.OrderDto
 import com.orderservice.models.Order
 import com.orderservice.services.OrderService
-import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -14,12 +14,11 @@ import java.util.UUID
 class OrderController(private val orderService: OrderService) {
     
     @PostMapping
-    fun placeOrder(@RequestBody orderCreateDto: OrderCreateDto): ResponseEntity<com.orderservice.dtos.orders.OrderDto> {
+    fun placeOrder(@RequestBody orderCreateDto: OrderCreateDto): ResponseEntity<OrderDto> {
         try {
-            val order = orderService.placeOrder(orderCreateDto)
+            val order:Order = orderService.placeOrder(orderCreateDto)
             return ResponseEntity(order.toDto(), HttpStatus.CREATED)
         } catch (e: Exception) {
-            // Handle the exception and return a meaningful error response
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
@@ -29,7 +28,6 @@ class OrderController(private val orderService: OrderService) {
         try {
             return ResponseEntity(1,HttpStatus.CREATED)
         } catch (e: Exception) {
-            // Handle the exception and return a meaningful error response
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
