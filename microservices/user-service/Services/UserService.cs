@@ -32,7 +32,9 @@ public class UserService(IUserRepository userRepo, IMapper mapper) : IUserServic
         user.Role = role;
         user.HashedPassword = PasswordHasher.HashPassword(userCreateDto.Password);
 
-        await userRepo.AddUserAsync(user);
+        userRepo.AddUser(user);
+        
+        await userRepo.SaveChangesAsync();
         
         return mapper.Map<UserDto>(user);
     }
@@ -48,23 +50,22 @@ public class UserService(IUserRepository userRepo, IMapper mapper) : IUserServic
 
         mapper.Map(userUpdateDto, user);
 
-        await userRepo.UpdateUserAsync(user);
+        await userRepo.SaveChangesAsync();
 
         return mapper.Map<UserDto>(user);
     }
 
-    public async Task<UserDto?> DeleteUserAsync(Guid id)
+    public async Task<bool> DeleteUserAsync(Guid id)
     {
         var user = await userRepo.GetUserByIdAsync(id);
 
-        if (user == null)
-        {
-            return null;
-        }
+        if (user == null) return false;
         
-        await userRepo.DeleteUserAsync(id);
-
-        return mapper.Map<UserDto>(user);
+        userRepo.DeleteUser(user);
+        
+        await userRepo.SaveChangesAsync();
+        
+        return true;
     }
 
     public List<RoleDto> GetAllUserRoles()

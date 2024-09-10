@@ -6,16 +6,15 @@ namespace user_service.Repositories.Users;
 
 public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
-    public async Task<User?> GetUserByIdAsync(Guid userId)
+    public async Task<User?> GetUserByIdAsync(Guid id)
     {
-        return await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        return await context.Users.FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<User?> GetUserByUserNameAsync(string username)
     {
         return await context.Users.FirstOrDefaultAsync(x => x.Username == username);
-
-    }
+    }   
 
     public async Task<User?> GetUserByEmailAsync(string email)
     {
@@ -27,25 +26,18 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
         return await context.Users.ToListAsync();
     }
 
-    public async Task AddUserAsync(User user)
+    public void AddUser(User user)
     {
         context.Users.Add(user);
-        await context.SaveChangesAsync();
+    }
+    
+    public void DeleteUser(User user)
+    {
+        context.Users.Remove(user);
     }
 
-    public async Task UpdateUserAsync(User user)
+    public async Task SaveChangesAsync()
     {
-        context.Entry(user).State = EntityState.Modified;
         await context.SaveChangesAsync();
-    }
-
-    public async Task DeleteUserAsync(Guid userId)
-    {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
-        if (user != null)
-        {
-            context.Users.Remove(user);
-            await context.SaveChangesAsync();
-        }
     }
 }

@@ -113,11 +113,8 @@ public class UsersController(IUserService userService) : ControllerBase
         try
         {
             var deletedUser = await userService.DeleteUserAsync(id);
-            if (deletedUser != null)
-            {
-                return Ok($"User with id: {id} was deleted successfully!");
-            }
-            
+            return Ok($"User with id: {id} was deleted successfully!");
+
             return NotFound();
         }
         catch (Exception e)
