@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "catalog-service", "catalog-service\catalog-service.csproj", "{635874D3-D65D-4381-BEEF-8F4FF55B4285}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "catalog-service", "catalog-service.csproj", "{69D0F4E6-D9BE-4B2E-B32E-3E2E9E3FDF9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{635874D3-D65D-4381-BEEF-8F4FF55B4285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{635874D3-D65D-4381-BEEF-8F4FF55B4285}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{635874D3-D65D-4381-BEEF-8F4FF55B4285}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{635874D3-D65D-4381-BEEF-8F4FF55B4285}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69D0F4E6-D9BE-4B2E-B32E-3E2E9E3FDF9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69D0F4E6-D9BE-4B2E-B32E-3E2E9E3FDF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69D0F4E6-D9BE-4B2E-B32E-3E2E9E3FDF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69D0F4E6-D9BE-4B2E-B32E-3E2E9E3FDF9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
