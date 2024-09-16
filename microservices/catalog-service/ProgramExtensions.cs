@@ -1,4 +1,7 @@
 using System.Text;
+using catalog_service.Repositories;
+using catalog_service.Repositories.Products;
+using catalog_service.Services.Products;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -70,11 +73,13 @@ public static class ProgramExtensions
     
     public static void AddRepositories(this IServiceCollection services)
     {
-        //services.AddScoped<IRepository, Repository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        
+        services.AddScoped<IUnityOfWork, UnityOfWork>();
     }
 
     public static void AddServices(this IServiceCollection services)
     {
-        //services.AddScoped<IService, Service>();
+        services.AddScoped<IProductService, ProductService>();
     }
 }

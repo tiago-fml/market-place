@@ -10,4 +10,5 @@ public class Product
     public string Description { get; set; }
     public double Price { get; set; }
     public bool IsDiscontinued { get; set; }
+    public double AvailableStock { get; set; }
 }
