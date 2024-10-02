@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using catalog_service.Data;
@@ -11,9 +12,11 @@ using catalog_service.Data;
 namespace catalog_service.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241002200434_added tabele unit of measure")]
+    partial class addedtabeleunitofmeasure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,6 +30,9 @@ namespace catalog_service.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<double>("AvailableStock")
+                        .HasColumnType("double precision");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -73,31 +79,6 @@ namespace catalog_service.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("catalog_service.Models.ProductPrice", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("EndDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductsPrices");
-                });
-
             modelBuilder.Entity("catalog_service.Models.UnitOfMeasure", b =>
                 {
                     b.Property<Guid>("Id")
@@ -134,7 +115,7 @@ namespace catalog_service.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UnitsOfMeasure");
+                    b.ToTable("UnitOfMeasure");
                 });
 
             modelBuilder.Entity("catalog_service.Models.Product", b =>
@@ -146,17 +127,6 @@ namespace catalog_service.Migrations
                         .IsRequired();
 
                     b.Navigation("UnitOfMeasure");
-                });
-
-            modelBuilder.Entity("catalog_service.Models.ProductPrice", b =>
-                {
-                    b.HasOne("catalog_service.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }
