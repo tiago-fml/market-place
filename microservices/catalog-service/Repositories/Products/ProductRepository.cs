@@ -22,4 +22,10 @@ public class ProductRepository(ApplicationDbContext context) : IProductRepositor
     {
         await context.Products.AddAsync(product);
     }
+
+    public Task DeleteProductAsync(Product product)
+    {
+        context.Products.Remove(product);
+        return Task.CompletedTask;
+    }
 }

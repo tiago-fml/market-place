@@ -12,7 +12,7 @@ public class Mapper : Profile
 
         CreateMap<Product, ProductDto>();
         CreateMap<ProductUpdateDto, Product>();
-        CreateMap<Product, ProductDto>();
+        CreateMap<ProductCreateDto, Product>();
 
         #endregion
         
